@@ -15,12 +15,16 @@ public class RecruiterProfile {
     private String city;
     private String country;
     private String profilePhoto;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @MapsId
     @JoinColumn(name = "id")
     private Users user;
 
     public RecruiterProfile() {
+    }
+
+    public RecruiterProfile(Users user) {
+        this.user = user;
     }
 
     public RecruiterProfile(Integer id, String company, String firstName, String lastName, String city, String country, String profilePhoto, Users user) {
