@@ -1,11 +1,8 @@
 package com.jobportal.jobportal.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
 @Entity
