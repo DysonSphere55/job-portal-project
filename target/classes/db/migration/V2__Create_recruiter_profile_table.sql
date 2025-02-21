@@ -1,6 +1,6 @@
 CREATE TABLE recruiter_profile (
 	id INTEGER AUTO_INCREMENT,
-    company VARCHAR(255) UNIQUE NOT NULL,
+    company VARCHAR(255),
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     city VARCHAR(255),
