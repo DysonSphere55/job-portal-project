@@ -10,9 +10,12 @@ import com.jobportal.jobportal.service.UsersService;
 import com.jobportal.jobportal.service.UsersTypeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Objects;
 
 @Controller
 public class UsersController {
@@ -40,7 +43,7 @@ public class UsersController {
     }
 
     @PostMapping("/register/user")
-    public String registerUserPage(Model model, Users user) {
+    public String registerUserPage(Model model, @ModelAttribute(name = "user") Users user) {
 
         if (usersService.findByEmail(user.getEmail()).isPresent()) {
             model.addAttribute("error",
@@ -51,18 +54,18 @@ public class UsersController {
         }
 
         user.setActive(true);
-        user.setRegisteredDate(new Date());
+        user.setRegisteredDate(LocalDateTime.now());
         Users savedUser = usersService.save(user);
 
-        if (user.getUsersType().getType().equals("RECRUITER")) {
+        String type = Objects.requireNonNull(user.getUsersType().getType());
+        if (type.equals("RECRUITER")) {
             recruiterProfileService.save(new RecruiterProfile(savedUser));
         }
-
-        if (user.getUsersType().getType().equals("CANDIDATE")) {
+        if (type.equals("CANDIDATE")) {
             candidateProfileService.save(new CandidateProfile(savedUser));
         }
 
-        return "dashboard";
-
+        return "redirect:/dashboard";
     }
+
 }

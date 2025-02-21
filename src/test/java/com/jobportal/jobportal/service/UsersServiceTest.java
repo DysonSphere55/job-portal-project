@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -34,7 +35,7 @@ public class UsersServiceTest {
     void setUp() {
         UsersType recruiterType = usersTypeRepository.save(new UsersType(null, "RECRUITER"));
         testUser = new Users(
-                null, "test@example.com", "test123", true, new Date(), recruiterType
+                null, "test@example.com", "test123", true, LocalDateTime.now(), recruiterType
         );
         usersService.save(testUser);
     }

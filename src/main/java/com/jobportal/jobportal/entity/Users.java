@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -17,7 +18,7 @@ public class Users {
     private String email;
     private String password;
     private Boolean isActive;
-    private Date registeredDate;
+    private LocalDateTime registeredDate;
     @ManyToOne()
     @JoinColumn(name = "users_type_id")
     private UsersType usersType;
@@ -25,7 +26,7 @@ public class Users {
     public Users() {
     }
 
-    public Users(Integer id, String email, String password, Boolean isActive, Date registeredDate, UsersType usersType) {
+    public Users(Integer id, String email, String password, Boolean isActive, LocalDateTime registeredDate, UsersType usersType) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -66,11 +67,11 @@ public class Users {
         isActive = active;
     }
 
-    public Date getRegisteredDate() {
+    public LocalDateTime getRegisteredDate() {
         return registeredDate;
     }
 
-    public void setRegisteredDate(Date registeredDate) {
+    public void setRegisteredDate(LocalDateTime registeredDate) {
         this.registeredDate = registeredDate;
     }
 

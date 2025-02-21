@@ -86,7 +86,7 @@ public class UsersControllerTest {
         verify(usersService, times(1)).save(recruiterNewUser);
         verify(recruiterProfileService, times(1)).save(any(RecruiterProfile.class));
 
-        assertEquals("dashboard", viewName);
+        assertEquals("redirect:/dashboard", viewName);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class UsersControllerTest {
         verify(usersService, times(1)).save(candidateNewUser);
         verify(candidateProfileService, times(1)).save(any(CandidateProfile.class));
 
-        assertEquals("dashboard", viewName);
+        assertEquals("redirect:/dashboard", viewName);
     }
 
     @Test
