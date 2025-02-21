@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/index-style.css" />
+    <title>Job Portal</title>
+  </head>
+  <body>
+    <div class="main-container">
+      <header>
+        <div class="logo"><h1>Job Portal</h1></div>
+      </header>
+      <section>
+        <form th:action="@{/register/user}" th:object="${user}" method="POST">
+          <div th:if="${error}" th:text="${error}"></div>
+          <div>
+            <input type="text" placeholder="Email" name="email" th:field="*{email}" />
+          </div>
+          <div>
+            <input type="password" placeholder="Password" name="password" th:field="*{password}" />
+          </div>
+          <div>
+            <select th:field="*{usersType}">
+              <option
+                      th:each="type : ${types}"
+                      th:value="${type.id}"
+                      th:text="${type.type}"
+              ></option>
+            </select>
+          </div>
+          <div>
+            <input type="submit" value="Submit" />
+          </div>
+        </form>
+      </section>
+      <footer></footer>
+    </div>
+  </body>
+</html>
