@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Portal</title>
+  </head>
+  <body>
+    <div class="main-container">
+      <header>
+        <div class="logo"><h1>Job Portal</h1></div>
+      </header>
+      <section>
+        <h3>Login Page</h3>
+        <form th:action="@{/login}" method="POST">
+          <div th:if="${errorLogin}">
+            <p>Wrong username or password.</p>
+          </div>
+          <div>
+            <input type="text" id="username" placeholder="Email" field="{email}" name="username" autofocus="autofocus" />
+          </div>
+          <div>
+            <input type="password" id="password" placeholder="Password" field="{password}" name="password" />
+          </div>
+          <div>
+            <input type="submit" value="Login" />
+          </div>
+        </form>
+      </section>
+      <footer></footer>
+    </div>
+  </body>
+</html>

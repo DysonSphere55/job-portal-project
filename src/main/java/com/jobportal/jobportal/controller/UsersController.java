@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.Date;
+
 @Controller
 public class UsersController {
 
@@ -48,6 +50,8 @@ public class UsersController {
             return "register";
         }
 
+        user.setActive(true);
+        user.setRegisteredDate(new Date());
         Users savedUser = usersService.save(user);
 
         if (user.getUsersType().getType().equals("RECRUITER")) {
