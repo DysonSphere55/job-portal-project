@@ -8,6 +8,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -18,9 +19,9 @@ public class SecurityConfig {
     private final static String[] PUBLIC_URL = {
             "/",
             "/global-search/**",
-            "/register",
             "/register/**",
-            "/error"
+            "/error",
+            "/css/**", "/js/**", "/images/**"
     };
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -33,11 +34,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
 
-        http.authenticationProvider(authenticationProvider());
-
-        http
+        return http
+                .authenticationProvider(authenticationProvider
+                )
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(PUBLIC_URL).permitAll()
                         .anyRequest().authenticated()
@@ -53,9 +54,12 @@ public class SecurityConfig {
                         .permitAll())
                 .csrf(AbstractHttpConfigurer::disable
                 )
-                .cors(Customizer.withDefaults());
+                .cors(Customizer.withDefaults()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .build();
 
-        return http.build();
     }
 
     @Bean
@@ -68,6 +72,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);
     }
 }

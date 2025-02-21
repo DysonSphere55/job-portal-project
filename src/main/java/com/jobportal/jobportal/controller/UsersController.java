@@ -5,6 +5,7 @@ import com.jobportal.jobportal.entity.RecruiterProfile;
 import com.jobportal.jobportal.entity.Users;
 import com.jobportal.jobportal.service.CandidateProfileService;
 import com.jobportal.jobportal.service.RecruiterProfileService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import com.jobportal.jobportal.service.UsersService;
 import com.jobportal.jobportal.service.UsersTypeService;
@@ -24,15 +25,18 @@ public class UsersController {
     private final UsersTypeService usersTypeService;
     private final RecruiterProfileService recruiterProfileService;
     private final CandidateProfileService candidateProfileService;
+    private final PasswordEncoder passwordEncoder;
 
     public UsersController(UsersService usersService,
                            UsersTypeService usersTypeService,
                            RecruiterProfileService recruiterProfileService,
-                           CandidateProfileService candidateProfileService) {
+                           CandidateProfileService candidateProfileService,
+                           PasswordEncoder passwordEncoder) {
         this.usersService = usersService;
         this.usersTypeService = usersTypeService;
         this.recruiterProfileService = recruiterProfileService;
         this.candidateProfileService = candidateProfileService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/register")
@@ -55,6 +59,7 @@ public class UsersController {
 
         user.setActive(true);
         user.setRegisteredDate(LocalDateTime.now());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         Users savedUser = usersService.save(user);
 
         String type = Objects.requireNonNull(user.getUsersType().getType());
