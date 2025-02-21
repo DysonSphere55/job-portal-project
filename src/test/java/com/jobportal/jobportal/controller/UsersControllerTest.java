@@ -1,8 +1,12 @@
 package com.jobportal.jobportal.controller;
 
 
+import com.jobportal.jobportal.entity.CandidateProfile;
+import com.jobportal.jobportal.entity.RecruiterProfile;
 import com.jobportal.jobportal.entity.Users;
 import com.jobportal.jobportal.entity.UsersType;
+import com.jobportal.jobportal.service.CandidateProfileService;
+import com.jobportal.jobportal.service.RecruiterProfileService;
 import com.jobportal.jobportal.service.UsersService;
 import com.jobportal.jobportal.service.UsersTypeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,18 +33,36 @@ public class UsersControllerTest {
     private UsersTypeService usersTypeService;
 
     @Mock
+    private RecruiterProfileService recruiterProfileService;
+
+    @Mock
+    private CandidateProfileService candidateProfileService;
+
+    @Mock
     private Model model;
 
     @InjectMocks
     private UsersController usersController;
 
     private List<UsersType> usersTypes;
+    private Users recruiterNewUser;
+    private Users candidateNewUser;
 
     @BeforeEach
     void setUp() {
         UsersType recruiterType = new UsersType(1, "RECRUITER");
         UsersType candidateType = new UsersType(2, "CANDIDATE");
         usersTypes = List.of(recruiterType, candidateType);
+
+        recruiterNewUser = new Users();
+        recruiterNewUser.setId(1);
+        recruiterNewUser.setEmail("recruiter@email.com");
+        recruiterNewUser.setUsersType(recruiterType);
+
+        candidateNewUser = new Users();
+        candidateNewUser.setId(2);
+        candidateNewUser.setEmail("candidate@email.com");
+        candidateNewUser.setUsersType(candidateType);
     }
 
     @Test
@@ -56,32 +78,42 @@ public class UsersControllerTest {
     }
 
     @Test
-    void testRegisterUserPageSuccess() {
-        Users user = new Users();
-        user.setEmail("john.doe@email.com");
+    void testRegisterUserPageRecruiterSuccess() {
+        when(usersService.findByEmail(recruiterNewUser.getEmail())).thenReturn(Optional.empty());
 
-        when(usersService.findByEmail(user.getEmail())).thenReturn(Optional.empty());
+        String viewName = usersController.registerUserPage(model, recruiterNewUser);
 
-        String viewName = usersController.registerUserPage(model, user);
+        verify(usersService, times(1)).save(recruiterNewUser);
+        verify(recruiterProfileService, times(1)).save(any(RecruiterProfile.class));
 
-        verify(usersService, times(1)).save(user);
+        assertEquals("dashboard", viewName);
+    }
+
+    @Test
+    void testRegisterUserPageCandidateSuccess() {
+        when(usersService.findByEmail(candidateNewUser.getEmail())).thenReturn(Optional.empty());
+
+        String viewName = usersController.registerUserPage(model, candidateNewUser);
+
+        verify(usersService, times(1)).save(candidateNewUser);
+        verify(candidateProfileService, times(1)).save(any(CandidateProfile.class));
 
         assertEquals("dashboard", viewName);
     }
 
     @Test
     void testRegisterUserPageEmailExist() {
-        Users user = new Users();
-        user.setEmail("existing@email.com");
+        Users registeredUser = new Users();
+        registeredUser.setEmail("already.registered@email.com");
 
         when(usersTypeService.getAll()).thenReturn(usersTypes);
-        when(usersService.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(usersService.findByEmail(registeredUser.getEmail())).thenReturn(Optional.of(registeredUser));
 
-        String viewName = usersController.registerUserPage(model, user);
+        String viewName = usersController.registerUserPage(model, registeredUser);
 
         verify(model).addAttribute("error",
                 "The email you have provided is already associated with an account.");
-        verify(model).addAttribute("user", user);
+        verify(model).addAttribute("user", registeredUser);
         verify(model).addAttribute("types", usersTypes);
 
         assertEquals("register", viewName);

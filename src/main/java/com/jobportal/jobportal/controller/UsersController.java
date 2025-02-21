@@ -1,6 +1,10 @@
 package com.jobportal.jobportal.controller;
 
+import com.jobportal.jobportal.entity.CandidateProfile;
+import com.jobportal.jobportal.entity.RecruiterProfile;
 import com.jobportal.jobportal.entity.Users;
+import com.jobportal.jobportal.service.CandidateProfileService;
+import com.jobportal.jobportal.service.RecruiterProfileService;
 import org.springframework.ui.Model;
 import com.jobportal.jobportal.service.UsersService;
 import com.jobportal.jobportal.service.UsersTypeService;
@@ -13,10 +17,17 @@ public class UsersController {
 
     private final UsersService usersService;
     private final UsersTypeService usersTypeService;
+    private final RecruiterProfileService recruiterProfileService;
+    private final CandidateProfileService candidateProfileService;
 
-    public UsersController(UsersService usersService, UsersTypeService usersTypeService) {
+    public UsersController(UsersService usersService,
+                           UsersTypeService usersTypeService,
+                           RecruiterProfileService recruiterProfileService,
+                           CandidateProfileService candidateProfileService) {
         this.usersService = usersService;
         this.usersTypeService = usersTypeService;
+        this.recruiterProfileService = recruiterProfileService;
+        this.candidateProfileService = candidateProfileService;
     }
 
     @GetMapping("/register")
@@ -37,7 +48,15 @@ public class UsersController {
             return "register";
         }
 
-        usersService.save(user);
+        Users savedUser = usersService.save(user);
+
+        if (user.getUsersType().getType().equals("RECRUITER")) {
+            recruiterProfileService.save(new RecruiterProfile(savedUser));
+        }
+
+        if (user.getUsersType().getType().equals("CANDIDATE")) {
+            candidateProfileService.save(new CandidateProfile(savedUser));
+        }
 
         return "dashboard";
 
