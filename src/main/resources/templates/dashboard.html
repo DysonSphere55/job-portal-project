@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,6 +9,31 @@
     <div class="main-container">
       <header>
         <div class="logo"><h1>Dashboard</h1></div>
+        <nav>
+          <div sec:authorize="hasAuthority('RECRUITER')">
+            <a th:href="@{/recruiter/profile}">Edit Profile</a>
+            <a th:href="@{/dashboard}">Show Jobs</a>
+            <a th:href="@{/job/new}">Post New Job</a>
+          </div>
+          <div sec:authorize="hasAuthority('CANDIDATE')">
+            <a th:href="@{/candidate/profile}">Edit Profile</a>
+            <a th:href="@{/candidate/jobs/saved}">Show Saved Jobs</a>
+            <a th:href="@{/candidate/jobs/applied}">Show Applied Jobs</a>
+          </div>
+        </nav>
+        <div>
+          <img
+                  th:if="${profile.profilePhotoPath}"
+                  th:src="@{${profile.profilePhotoPath}}"
+                  alt="profilePhotoPath"
+                  width="60px"
+                  height="60px"
+          >
+          <p th:if="${profile.firstName == null && profile.lastName == null}"
+             th:text="${username}"></p>
+          <p th:if="${profile.firstName != null && profile.lastName != null}"
+             th:text="${profile.firstName+' '+profile.lastName}"></p>
+        </div>
       </header>
       <section>
         <form action="#" method="GET">
