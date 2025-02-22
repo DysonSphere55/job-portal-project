@@ -9,6 +9,8 @@ import com.jobportal.jobportal.service.CandidateProfileService;
 import com.jobportal.jobportal.service.RecruiterProfileService;
 import com.jobportal.jobportal.service.UsersService;
 import com.jobportal.jobportal.service.UsersTypeService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,6 +53,8 @@ public class UsersControllerTest {
     private List<UsersType> usersTypes;
     private Users recruiterNewUser;
     private Users candidateNewUser;
+    private HttpServletResponse resp;
+    private HttpServletRequest req;
 
     @BeforeEach
     void setUp() {
@@ -121,6 +125,16 @@ public class UsersControllerTest {
         verify(model).addAttribute("types", usersTypes);
 
         assertEquals("register", viewName);
+    }
+
+    @Test
+    void testLoginPage() {
+        assertEquals("login", usersController.loginPage());
+    }
+
+    @Test
+    void testLogoutPage() {
+        assertEquals("redirect:/", usersController.logoutPage(req, resp));
     }
 
 }
