@@ -23,7 +23,7 @@
         </nav>
         <div>
           <img
-                  th:if="${profile.profilePhotoPath}"
+                  th:if="${profile.profilePhotoPath != null}"
                   th:src="@{${profile.profilePhotoPath}}"
                   alt="profilePhotoPath"
                   width="60px"
