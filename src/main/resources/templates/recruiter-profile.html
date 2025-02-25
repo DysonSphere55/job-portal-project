@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Portal</title>
+  </head>
+  <body>
+    <div class="main-container">
+      <header>
+        <div class="logo"><h1>Recruiter Profile</h1></div>
+      </header>
+      <section>
+        <form th:action="@{/recruiter/update}" method="POST" th:object="${profile}" enctype="multipart/form-data">
+          <input type="text" name="id" id="id" th:field="*{id}" hidden />
+          <input type="text" name="firstName" id="firstName" th:field="*{firstName}" placeholder="First Name" />
+          <input type="text" name="lastName" id="lastName" th:field="*{lastName}" placeholder="Last Name" />
+          <input type="text" name="company" id="company" th:field="*{company}" placeholder="Company" />
+          <input type="text" name="city" id="city" th:field="*{city}" placeholder="City" />
+          <input type="text" name="country" id="country" th:field="*{country}" placeholder="Country" />
+          <input type="text" name="profilePhoto" id="profilePhoto" th:field="*{profilePhoto}" hidden />
+          <label for="profilePhotoFile">Choose a profile picture:</label>
+          <input type="file" id="profilePhotoFile" name="profilePhoto" accept="image/png, image/jpeg" />
+          <input type="submit" value="Submit">
+        </form>
+      </section>
+      <footer></footer>
+    </div>
+  </body>
+</html>
