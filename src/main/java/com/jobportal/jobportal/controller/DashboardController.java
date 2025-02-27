@@ -42,14 +42,14 @@ public class DashboardController {
 
             model.addAttribute("username", user.getEmail());
 
-            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("RECRUITER"))) {
+            if ("RECRUITER".equals(user.getUsersType().getType())) {
                 RecruiterProfile recruiterProfile = recruiterProfileService.findById(user.getId())
                         .orElseThrow(() -> new UsernameNotFoundException("Profile not found with id: " + user.getId()));
 
                 model.addAttribute("profile", recruiterProfile);
             }
 
-            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("CANDIDATE"))) {
+            if ("CANDIDATE".equals(user.getUsersType().getType())) {
 
                 CandidateProfile candidateProfile = candidateProfileService.findById(user.getId())
                         .orElseThrow(() -> new UsernameNotFoundException("Profile not found with id: " + user.getId()));
