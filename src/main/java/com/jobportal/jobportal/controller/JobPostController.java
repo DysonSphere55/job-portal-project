@@ -13,6 +13,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.time.LocalDateTime;
 
 @Controller
 public class JobPostController {
@@ -28,9 +32,18 @@ public class JobPostController {
     }
 
     @GetMapping("/job/new")
-    public String newJobPage(Model model) {
+    public String jobPostPage(Model model) {
 
         JobPost jobPost = new JobPost();
+
+        model.addAttribute("jobPost", jobPost);
+
+        return "job-post";
+
+    }
+
+    @PostMapping("/job/new/save")
+    public String jobPostSavePage(@ModelAttribute(name = "jobPost") JobPost jobPost, Model model) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -42,11 +55,12 @@ public class JobPostController {
                     .orElseThrow(() -> new UsernameNotFoundException("Profile with id "+user.getId()+" not found"));
 
             jobPost.setRecruiterProfile(recruiterProfile);
+
+            jobPost.setPostedDate(LocalDateTime.now());
+
+            jobPostService.save(jobPost);
         }
 
-        model.addAttribute("jobPost", jobPost);
-
-        return "job-post";
-
+        return "redirect:/dashboard";
     }
 }
