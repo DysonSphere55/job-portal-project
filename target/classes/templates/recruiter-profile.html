@@ -11,18 +11,23 @@
         <div class="logo"><h1>Recruiter Profile</h1></div>
       </header>
       <section>
-        <form th:action="@{/recruiter/update}" method="POST" th:object="${profile}" enctype="multipart/form-data">
-          <input type="text" name="id" id="id" th:field="*{id}" hidden />
-          <input type="text" name="firstName" id="firstName" th:field="*{firstName}" placeholder="First Name" />
-          <input type="text" name="lastName" id="lastName" th:field="*{lastName}" placeholder="Last Name" />
-          <input type="text" name="company" id="company" th:field="*{company}" placeholder="Company" />
-          <input type="text" name="city" id="city" th:field="*{city}" placeholder="City" />
-          <input type="text" name="country" id="country" th:field="*{country}" placeholder="Country" />
-          <input type="text" name="profilePhoto" id="profilePhoto" th:field="*{profilePhoto}" hidden />
-          <label for="profilePhotoFile">Choose a profile picture:</label>
-          <input type="file" id="profilePhotoFile" name="profilePhoto" accept="image/png, image/jpeg" />
-          <input type="submit" value="Submit">
-        </form>
+        <div class="profile-form">
+          <form class="profile-form" th:action="@{/recruiter/profile/save}" th:object="${profile}" method="POST"
+                enctype="multipart/form-data" >
+            <input type="text" th:field="*{id}" hidden >
+            <input type="text" placeholder="First Name" th:field="*{firstName}">
+            <input type="text" placeholder="Last Name" th:field="*{lastName}">
+            <input type="text" placeholder="Company" th:field="*{company}">
+            <input type="text" placeholder="City" th:field="*{city}">
+            <input type="text" placeholder="Country" th:field="*{country}">
+            <div class="profile-photo">
+              <label for="profile-photo">Choose a profile picture:</label>
+              <input type="file" id="profile-photo" name="profileImage" accept="image/png, image/jpeg" />
+              <input type="text" placeholder="Country" name="profileImage" th:field="*{profilePhotoPath}" hidden />
+            </div>
+            <input type="submit" value="Submit">
+          </form>
+        </div>
       </section>
       <footer></footer>
     </div>

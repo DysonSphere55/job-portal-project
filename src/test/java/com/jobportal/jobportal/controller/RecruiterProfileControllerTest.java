@@ -4,6 +4,7 @@ import com.jobportal.jobportal.entity.RecruiterProfile;
 import com.jobportal.jobportal.entity.Users;
 import com.jobportal.jobportal.service.RecruiterProfileService;
 import com.jobportal.jobportal.service.UsersService;
+import com.jobportal.jobportal.util.FileUploadUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,7 +17,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -40,6 +46,9 @@ public class RecruiterProfileControllerTest {
 
     @Mock
     private SecurityContext securityContext;
+
+    @Mock
+    private MultipartFile multipartFile;
 
     @InjectMocks
     private RecruiterProfileController recruiterProfileController;
@@ -105,5 +114,32 @@ public class RecruiterProfileControllerTest {
         verifyNoInteractions(recruiterProfileService);
 
         assertEquals("recruiter-profile", viewName);
+    }
+
+    @Test
+    void testRecruiterProfileSavePage_UserAuthenticated_ProfileExists() throws IOException {
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("recruiter@email.test");
+
+        Users mockUser = new Users();
+        mockUser.setId(0);
+        when(usersService.findByEmail("recruiter@email.test")).thenReturn(Optional.of(mockUser));
+
+        when(multipartFile.getOriginalFilename()).thenReturn("profile.jpg");
+        when(multipartFile.isEmpty()).thenReturn(false);
+
+        InputStream mockInputStream = new ByteArrayInputStream("fake content".getBytes());
+        when(multipartFile.getInputStream()).thenReturn(mockInputStream);
+
+        RecruiterProfile mockProfile = new RecruiterProfile();
+        when(recruiterProfileService.save(any())).thenReturn(mockProfile);
+
+        String viewName = recruiterProfileController.recruiterProfileSavePage(model, mockProfile, multipartFile);
+
+        verify(recruiterProfileService, times(1)).save(mockProfile);
+        verify(multipartFile, times(2)).getOriginalFilename();
+        verify(multipartFile, times(1)).getInputStream();
+
+        assertEquals("redirect:/dashboard", viewName);
     }
 }

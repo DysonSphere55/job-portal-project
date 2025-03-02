@@ -53,8 +53,6 @@ public class UsersControllerTest {
     private List<UsersType> usersTypes;
     private Users recruiterNewUser;
     private Users candidateNewUser;
-    private HttpServletResponse resp;
-    private HttpServletRequest req;
 
     @BeforeEach
     void setUp() {
@@ -134,6 +132,9 @@ public class UsersControllerTest {
 
     @Test
     void testLogoutPage() {
+        HttpServletRequest req = mock(HttpServletRequest.class);
+        HttpServletResponse resp = mock(HttpServletResponse.class);
+
         assertEquals("redirect:/", usersController.logoutPage(req, resp));
     }
 

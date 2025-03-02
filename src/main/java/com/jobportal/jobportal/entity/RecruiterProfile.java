@@ -118,6 +118,6 @@ public class RecruiterProfile {
 
     public String getProfilePhotoPath() {
         if (id == null || profilePhoto == null) return null;
-        return "/recruiter/"+id+"/"+profilePhoto;
+        return "/import/recruiter/photos/"+id+"/"+profilePhoto;
     }
 }
