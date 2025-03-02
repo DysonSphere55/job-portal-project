@@ -4,6 +4,7 @@ import com.jobportal.jobportal.entity.CandidateProfile;
 import com.jobportal.jobportal.entity.RecruiterProfile;
 import com.jobportal.jobportal.entity.Users;
 import com.jobportal.jobportal.service.CandidateProfileService;
+import com.jobportal.jobportal.service.JobPostService;
 import com.jobportal.jobportal.service.RecruiterProfileService;
 import com.jobportal.jobportal.service.UsersService;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -21,13 +22,16 @@ public class DashboardController {
     private final UsersService usersService;
     private final RecruiterProfileService recruiterProfileService;
     private final CandidateProfileService candidateProfileService;
+    private final JobPostService jobPostService;
 
     public DashboardController(UsersService usersService,
                                RecruiterProfileService recruiterProfileService,
-                               CandidateProfileService candidateProfileService) {
+                               CandidateProfileService candidateProfileService,
+                               JobPostService jobPostService) {
         this.usersService = usersService;
         this.recruiterProfileService = recruiterProfileService;
         this.candidateProfileService = candidateProfileService;
+        this.jobPostService = jobPostService;
     }
 
     @GetMapping("/dashboard")
