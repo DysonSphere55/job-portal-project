@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Job</title>
+</head>
+<body>
+  <div class="form">
+    <form class="job-form" th:action="@{/job/new/save}" th:object="${jobPost}" method="POST" >
+        <input type="text" th:field="*{id}" hidden >
+        <input type="text" th:field="*{postedDate}" hidden >
+        <input type="text" th:field="*{jobCompany.id}" hidden >
+        <input type="text" th:field="*{jobLocation.id}" hidden >
+        <h4>JOB DETAILS</h4>
+        <input type="text" placeholder="Job Title" th:field="*{title}">
+        <select th:field="*{type}">
+            <option value="">Employment Type</option>
+            <option th:value="Part-Time">Part-Time</option>
+            <option th:value="Full-Time">Full-Time</option>
+            <option th:value="Freelance">Freelance</option>
+        </select>
+        <select th:field="*{remote}">
+            <option value="">Remote</option>
+            <option th:value="Remote-Only">Remote-Only</option>
+            <option th:value="Office-Only">Office-Only</option>
+            <option th:value="Partial-Remote">Partial-Remote</option>
+        </select>
+        <input type="text" placeholder="Salary" th:field="*{salary}">
+        <h4>DESCRIPTION</h4>
+        <textarea name="description" rows="5" cols="33" th:field="*{description}">
+        </textarea>
+        <h4>LOCATION</h4>
+        <input type="text" placeholder="City" th:field="*{jobLocation.city}">
+        <input type="text" placeholder="Country" th:field="*{jobLocation.country}">
+        <h4>COMPANY</h4>
+        <input type="text" placeholder="Company" th:field="*{jobCompany.name}">
+        <input type="submit" value="Submit">
+    </form>
+  </div>
+</body>
+</html>

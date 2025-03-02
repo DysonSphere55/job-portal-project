@@ -34,8 +34,7 @@ public class JobPost {
     public JobPost() {
     }
 
-    public JobPost(Integer id, String title, String type, String remote, String description, String salary,
-                   LocalDateTime postedDate, JobCompany jobCompany, JobLocation jobLocation) {
+    public JobPost(Integer id, String title, String type, String remote, String description, String salary, LocalDateTime postedDate, JobCompany jobCompany, JobLocation jobLocation, RecruiterProfile recruiterProfile) {
         this.id = id;
         this.title = title;
         this.type = type;
@@ -45,6 +44,7 @@ public class JobPost {
         this.postedDate = postedDate;
         this.jobCompany = jobCompany;
         this.jobLocation = jobLocation;
+        this.recruiterProfile = recruiterProfile;
     }
 
     public Integer getId() {
@@ -119,6 +119,14 @@ public class JobPost {
         this.jobLocation = jobLocation;
     }
 
+    public RecruiterProfile getRecruiterProfile() {
+        return recruiterProfile;
+    }
+
+    public void setRecruiterProfile(RecruiterProfile recruiterProfile) {
+        this.recruiterProfile = recruiterProfile;
+    }
+
     @Override
     public String toString() {
         return "JobPost{" +
@@ -131,7 +139,7 @@ public class JobPost {
                 ", postedDate=" + postedDate +
                 ", jobCompany=" + jobCompany +
                 ", jobLocation=" + jobLocation +
+                ", recruiterProfile=" + recruiterProfile +
                 '}';
     }
-
 }
