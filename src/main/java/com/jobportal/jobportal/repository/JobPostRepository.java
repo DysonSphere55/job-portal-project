@@ -1,55 +1,35 @@
 package com.jobportal.jobportal.repository;
 
+import com.jobportal.jobportal.dto.IRecruiterJobPost;
 import com.jobportal.jobportal.entity.JobPost;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface JobPostRepository extends JpaRepository<JobPost, Integer> {
 
 
-    /*
-    CREATE TABLE job_company (
-	id INTEGER AUTO_INCREMENT,
-    name VARCHAR(255),
-    brand VARCHAR(255),
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE job_location (
-	id INTEGER AUTO_INCREMENT,
-    city VARCHAR(255),
-    country VARCHAR(255),
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE job_post (
-	id INTEGER AUTO_INCREMENT,
-    title VARCHAR(255) NOT NULL,
-    type VARCHAR(255),
-    remote VARCHAR(255),
-    description VARCHAR(10000),
-    salary VARCHAR(255),
-    posted_date TIMESTAMP DEFAULT NOW(),
-    job_company_id INTEGER,
-    job_location_id INTEGER,
-    recruiter_profile_id INTEGER,
-    PRIMARY KEY (id),
-    FOREIGN KEY (job_company_id)
-    REFERENCES job_company(id) ON DELETE CASCADE,
-    FOREIGN KEY (job_location_id)
-    REFERENCES job_location(id) ON DELETE CASCADE,
-    FOREIGN KEY (recruiter_profile_id)
-    REFERENCES recruiter_profile(id) ON DELETE CASCADE
-);
-     */
-
-//    @Query(value = """SELECT
-//            job_post.id AS id,
-//            job_post.title AS title,
-//            COUNT(
-//            """, nativeQuery = true)
-//    List<IRecruiterJobPost> getRecruiterJobPosts(int recruiterId);
+    @Query(value = """
+            SELECT
+                job_post.id AS id,
+                job_post.title AS title,
+                COUNT(candidate_job_apply.id) AS candidatesApplied,
+                job_location.id AS jobLocationId,
+                job_location.city AS city,
+                job_location.country AS country,
+                job_company.id AS jobCompanyId,
+                job_company.name AS name
+            FROM job_post
+                JOIN job_company ON job_company.id = job_post.job_company_id
+                JOIN job_location ON job_location.id = job_post.job_location_id
+                LEFT JOIN candidate_job_apply ON candidate_job_apply.job_post_id = job_post.id
+            WHERE job_post.recruiter_profile_id = :recruiterId
+            GROUP BY job_post.id;
+            """, nativeQuery = true)
+    List<IRecruiterJobPost> getRecruiterJobPosts(@Param("recruiterId") int recruiterId);
 
 }

@@ -1,5 +1,6 @@
 package com.jobportal.jobportal.controller;
 
+import com.jobportal.jobportal.dto.RecruiterJobPostDTO;
 import com.jobportal.jobportal.entity.CandidateProfile;
 import com.jobportal.jobportal.entity.RecruiterProfile;
 import com.jobportal.jobportal.entity.Users;
@@ -15,6 +16,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+
+import java.util.List;
 
 @Controller
 public class DashboardController {
@@ -50,6 +53,9 @@ public class DashboardController {
                 RecruiterProfile recruiterProfile = recruiterProfileService.findById(user.getId())
                         .orElseThrow(() -> new UsernameNotFoundException("Profile not found with id: " + user.getId()));
 
+                List<RecruiterJobPostDTO> recruiterJobPosts = jobPostService.getRecruiterJobPosts(recruiterProfile.getId());
+
+                model.addAttribute("jobPosts", recruiterJobPosts);
                 model.addAttribute("profile", recruiterProfile);
             }
 
