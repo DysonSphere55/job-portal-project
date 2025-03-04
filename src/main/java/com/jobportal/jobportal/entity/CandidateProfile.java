@@ -2,6 +2,8 @@ package com.jobportal.jobportal.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 
 @Entity
 @Table(name="candidate_profile")
@@ -20,6 +22,9 @@ public class CandidateProfile {
     @MapsId
     @JoinColumn(name = "id")
     private Users user;
+
+    @OneToMany(cascade = CascadeType.ALL, targetEntity = CandidateSkills.class, mappedBy = "candidateProfile")
+    private List<CandidateSkills> skills;
 
     public CandidateProfile() {
     }
@@ -101,6 +106,14 @@ public class CandidateProfile {
 
     public void setUser(Users user) {
         this.user = user;
+    }
+
+    public List<CandidateSkills> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<CandidateSkills> skills) {
+        this.skills = skills;
     }
 
     @Override

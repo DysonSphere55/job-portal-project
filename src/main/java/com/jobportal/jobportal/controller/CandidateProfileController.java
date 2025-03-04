@@ -1,6 +1,7 @@
 package com.jobportal.jobportal.controller;
 
 import com.jobportal.jobportal.entity.CandidateProfile;
+import com.jobportal.jobportal.entity.CandidateSkills;
 import com.jobportal.jobportal.entity.Users;
 import com.jobportal.jobportal.service.CandidateProfileService;
 import com.jobportal.jobportal.service.UsersService;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Controller
@@ -42,7 +46,15 @@ public class CandidateProfileController {
             CandidateProfile candidateProfile = candidateProfileService.findById(user.getId())
                     .orElseThrow(() -> new UsernameNotFoundException("Profile not found with id: " + user.getId()));
 
+            List<CandidateSkills> emptySkillsList = new ArrayList<>();
+            emptySkillsList.add(new CandidateSkills());
+
+            if (candidateProfile.getSkills() == null) {
+                candidateProfile.setSkills(emptySkillsList);
+            }
+
             model.addAttribute("profile", candidateProfile);
+            model.addAttribute("skills", emptySkillsList);
 
         }
 
