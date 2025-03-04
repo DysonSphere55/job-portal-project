@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Candidate Profile</title>
+    <style>
+        .profile-form {
+            width: 400px;
+            margin: 50px auto;
+            display: grid;
+            row-gap: 20px;
+        }
+        .form-item {
+            margin: 10px;
+        }
+        .error {
+            color: red;
+        }
+        .candidate-overview {
+            width: 500px;
+            margin: 0 auto;
+        }
+        .overview-name {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .overview-location {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .overview-type {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        table {
+         border-collapse: collapse;
+        }
+        td {
+            width: 33%;
+        }
+        thead {
+            text-align: left;
+        }
+
+
+    </style>
+</head>
+<body>
+  <div class="profile-form" sec:authorize="hasAuthority('CANDIDATE')">
+    <form class="profile-form" th:action="@{/candidate/profile/save}" th:object="${profile}" method="POST" enctype="multipart/form-data" >
+        <input type="text" th:field="*{id}" hidden >
+        <input type="text" placeholder="First Name" th:field="*{firstName}">
+        <input type="text" placeholder="Last Name" th:field="*{lastName}">
+        <input type="text" placeholder="City" th:field="*{city}">
+        <input type="text" placeholder="Country" th:field="*{country}">
+        <div id="skills-container">
+            <div th:each="skills, iterStat : *{skills}">
+                <div class="skill-repeat">
+                    <div>
+                        <input type="text" th:field="*{skills[__${iterStat.index}__].id}" hidden>
+                    </div>
+                    <div>
+                        <input type="text" th:field="*{skills[__${iterStat.index}__].name}" placeholder="Skills Name">
+                    </div>
+                    <div>
+                        <input type="text" th:field="*{skills[__${iterStat.index}__].yearsOfExperience}" placeholder="Years of Experience">
+                    </div>
+                    <div>
+                        <select th:field="*{skills[__${iterStat.index}__].experienceLevel}">
+                            <option value="">Experience Level</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advance">Advance</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div sec:authorize="hasAuthority('CANDIDATE')">
+            <button id="addSkill" type="button">Add Skill</button>
+        </div>
+        <div class="resume" sec:authorize="hasAuthority('CANDIDATE')">
+            <label for="resume-file">Upload your resume</label>
+            <input type="file" id="resume-file" name="resume-file" accept="application/pdf" >
+            <input type="text" name="resumeFile" th:field="*{resume}" hidden>
+        </div>
+        <div class="profile-photo" sec:authorize="hasAuthority('CANDIDATE')">
+            <label for="profile-photo">Choose a profile picture:</label>
+            <input type="file" id="profile-photo" name="profileImage" accept="image/png, image/jpeg" />
+            <input type="text" name="profilePhoto" th:field="*{profilePhoto}" hidden>
+        </div>
+        <input type="submit" value="Submit" sec:authorize="hasAuthority('CANDIDATE')">
+    </form>
+  </div>
+
+<!--  <div class="candidate-overview" sec:authorize="hasAuthority('RECRUITER')">-->
+<!--      <div class="overview-name">-->
+<!--          <img th:src="${profile.profilePhotoPath}" alt="candidate-photo" class="candidate-photo" width="75px" height="75px">-->
+<!--          <div>-->
+<!--              <label for="firstName">First Name:</label>-->
+<!--              <p id="firstName" th:text="${profile.firstName}"></p>-->
+<!--          </div>-->
+<!--          <div>-->
+<!--              <label for="lastName">Last Name:</label>-->
+<!--              <p id="lastName" th:text="${profile.lastName}"></p>-->
+<!--          </div>-->
+<!--      </div>-->
+<!--      <hr>-->
+<!--      <div class="overview-location">-->
+<!--          <div>-->
+<!--              <label for="city">City:</label>-->
+<!--              <p id="city" th:text="${profile.city}"></p>-->
+<!--          </div>-->
+<!--          <div>-->
+<!--              <label for="country">Country:</label>-->
+<!--              <p id="country" th:text="${profile.country}"></p>-->
+<!--          </div>-->
+<!--      </div>-->
+<!--      <hr>-->
+<!--      <div class="overview-type">-->
+<!--          <div>-->
+<!--              <label for="employmentType">Employment Type:</label>-->
+<!--              <p id="employmentType" th:text="${profile.employmentType}"></p>-->
+<!--          </div>-->
+<!--          <div>-->
+<!--              <label for="workAuthorization">Employment Type:</label>-->
+<!--              <p id="workAuthorization" th:text="${profile.workAuthorization}"></p>-->
+<!--          </div>-->
+<!--      </div>-->
+<!--      <hr>-->
+<!--      <div class="overview-skills">-->
+<!--          <table>-->
+<!--              <thead>-->
+<!--                <tr>-->
+<!--                    <th>Name</th>-->
+<!--                    <th>Experience Level</th>-->
+<!--                    <th>Years of Experience</th>-->
+<!--                </tr>-->
+<!--              </thead>-->
+<!--              <tbody th:each="skill : ${skills}" class="skill">-->
+<!--                <tr>-->
+<!--                    <td th:text="${skill.name}"></td>-->
+<!--                    <td th:text="${skill.experienceLevel}"></td>-->
+<!--                    <td th:text="${skill.yearsOfExperience}"></td>-->
+<!--                </tr>-->
+<!--              </tbody>-->
+<!--          </table>-->
+<!--      </div>-->
+<!--      <hr>-->
+<!--      <div>-->
+<!--          <a th:href="@{|/candidate/download-resume?fileName=${profile.resume}&&candidateId=${profile.userAccountId}|}">-->
+<!--              Download Resume</a>-->
+<!--      </div>-->
+<!--  </div>-->
+
+<script>
+    document.getElementById("addSkill").addEventListener("click", function () {
+    var skillsContainer = document.getElementById("skills-container");
+
+    var counter = document.querySelectorAll(".skill-repeat").length; // Get current number of skill entries
+    var newSkill = document.createElement("div");
+    newSkill.classList.add("skill-repeat");
+
+    newSkill.innerHTML = `
+        <div>
+            <input type="text" name="skills[${counter}].id" hidden>
+        </div>
+        <div>
+            <input type="text" name="skills[${counter}].name" placeholder="Skill Name">
+        </div>
+        <div>
+            <input type="text" name="skills[${counter}].yearsOfExperience" placeholder="Years of Experience">
+        </div>
+        <div>
+            <select name="skills[${counter}].experienceLevel">
+                <option value="">Experience Level</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advance">Advance</option>
+            </select>
+        </div>
+    `;
+
+    skillsContainer.appendChild(newSkill);
+});
+
+</script>
+</body>
+</html>
