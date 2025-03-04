@@ -80,7 +80,7 @@
 <!--        <aside class="job-filters" sec:authorize="hasAuthority('CANDIDATE')">-->
 
 <!--          <form th:action="@{/dashboard/}" id="searchJobs">-->
-<!--            <div class="job-search-box" sec:authorize="hasAuthority('Job Seeker')">-->
+<!--            <div class="job-search-box" sec:authorize="hasAuthority('CANDIDATE')">-->
 <!--              <input type="text" id="job" placeholder="Search for Job" name="job" th:value="${job}"/>-->
 <!--              <input type="text" id="loc" placeholder="Search in Location" name="location" th:value="${location}"/>-->
 <!--              <button type="submit" form="searchJobs" value="Search">Search</button>-->

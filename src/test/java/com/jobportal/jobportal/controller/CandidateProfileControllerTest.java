@@ -1,7 +1,7 @@
 package com.jobportal.jobportal.controller;
 
 import com.jobportal.jobportal.entity.CandidateProfile;
-import com.jobportal.jobportal.entity.RecruiterProfile;
+import com.jobportal.jobportal.entity.CandidateSkills;
 import com.jobportal.jobportal.entity.Users;
 import com.jobportal.jobportal.service.CandidateProfileService;
 import com.jobportal.jobportal.service.UsersService;
@@ -22,7 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,7 +49,10 @@ public class CandidateProfileControllerTest {
     private SecurityContext securityContext;
 
     @Mock
-    private MultipartFile multipartFile;
+    private MultipartFile testProfilePhotoFile;
+
+    @Mock
+    private MultipartFile testResumeFile;
 
     @InjectMocks
     private CandidateProfileController candidateProfileController;
@@ -116,30 +121,39 @@ public class CandidateProfileControllerTest {
         assertEquals("candidate-profile", viewName);
     }
 
-//    @Test
-//    void testRecruiterProfileSavePage_UserAuthenticated_ProfileExists() throws IOException {
-//        when(securityContext.getAuthentication()).thenReturn(authentication);
-//        when(authentication.getName()).thenReturn("candidate@email.test");
-//
-//        Users testUser = new Users();
-//        testUser.setId(0);
-//        when(usersService.findByEmail("candidate@email.test")).thenReturn(Optional.of(testUser));
-//
-//        when(multipartFile.getOriginalFilename()).thenReturn("profile.jpg");
-//        when(multipartFile.isEmpty()).thenReturn(false);
-//
-//        InputStream mockInputStream = new ByteArrayInputStream("fake content".getBytes());
-//        when(multipartFile.getInputStream()).thenReturn(mockInputStream);
-//
-//        CandidateProfile testProfile = new CandidateProfile();
-//        when(candidateProfileService.save(any())).thenReturn(testProfile);
-//
-//        String viewName = candidateProfileController.candidateProfileSavePage(model, testProfile, multipartFile);
-//
-//        verify(candidateProfileService, times(1)).save(testProfile);
-//        verify(multipartFile, times(2)).getOriginalFilename();
-//        verify(multipartFile, times(1)).getInputStream();
-//
-//        assertEquals("redirect:/dashboard", viewName);
-//    }
+    @Test
+    void testRecruiterProfileSavePage_UserAuthenticated_ProfileExists() throws IOException {
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn("candidate@email.test");
+
+        Users testUser = new Users();
+        testUser.setId(0);
+        when(usersService.findByEmail("candidate@email.test")).thenReturn(Optional.of(testUser));
+
+        when(testProfilePhotoFile.getOriginalFilename()).thenReturn("profile.jpg");
+        when(testProfilePhotoFile.isEmpty()).thenReturn(false);
+        when(testResumeFile.getOriginalFilename()).thenReturn("resume.pdf");
+        when(testResumeFile.isEmpty()).thenReturn(false);
+
+        InputStream mockInputStream = new ByteArrayInputStream("fake content".getBytes());
+        when(testProfilePhotoFile.getInputStream()).thenReturn(mockInputStream);
+        when(testResumeFile.getInputStream()).thenReturn(mockInputStream);
+
+        CandidateProfile testProfile = new CandidateProfile();
+        when(candidateProfileService.save(any())).thenReturn(testProfile);
+        List<CandidateSkills> skillsList = new ArrayList<>();
+        skillsList.add(new CandidateSkills());
+        testProfile.setSkills(skillsList);
+
+        String viewName = candidateProfileController
+                .candidateProfileSavePage(model, testProfile, testProfilePhotoFile, testResumeFile);
+
+        verify(candidateProfileService, times(1)).save(testProfile);
+        verify(testProfilePhotoFile, times(2)).getOriginalFilename();
+        verify(testProfilePhotoFile, times(1)).getInputStream();
+        verify(testResumeFile, times(2)).getOriginalFilename();
+        verify(testResumeFile, times(1)).getInputStream();
+
+        assertEquals("redirect:/dashboard", viewName);
+    }
 }

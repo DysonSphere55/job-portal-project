@@ -101,8 +101,8 @@ public class CandidateProfileController {
         String resumeFileName = "";
         String resumeFileDir = "";
 
-        if (!photoFile.getOriginalFilename().equals("")) {
-            resumeFileName = StringUtils.cleanPath(Objects.requireNonNull(photoFile.getOriginalFilename()));
+        if (!resumeFile.getOriginalFilename().equals("")) {
+            resumeFileName = StringUtils.cleanPath(Objects.requireNonNull(resumeFile.getOriginalFilename()));
             candidateProfile.setResume(resumeFileName);
         }
 
