@@ -1,15 +1,12 @@
 package com.jobportal.jobportal.controller;
 
-import com.jobportal.jobportal.config.SecurityConfig;
 import com.jobportal.jobportal.entity.RecruiterProfile;
 import com.jobportal.jobportal.entity.Users;
 import com.jobportal.jobportal.service.RecruiterProfileService;
 import com.jobportal.jobportal.service.UsersService;
 import com.jobportal.jobportal.util.FileUploadUtil;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -59,7 +56,7 @@ public class RecruiterProfileController {
     @PostMapping("/recruiter/profile/save")
     public String recruiterProfileSavePage(Model model,
                                            @ModelAttribute(name = "profile") RecruiterProfile recruiterProfile,
-                                           @RequestParam(name = "profileImage") MultipartFile photoFile) {
+                                           @RequestParam(name = "profileImage", required = false) MultipartFile photoFile) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

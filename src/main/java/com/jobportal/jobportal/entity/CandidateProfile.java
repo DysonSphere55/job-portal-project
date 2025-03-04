@@ -132,6 +132,6 @@ public class CandidateProfile {
 
     public String getProfilePhotoPath() {
         if (id == null || profilePhoto == null) return null;
-        return "/candidate/"+id+"/"+profilePhoto;
+        return "/import/candidate/photos/"+id+"/"+profilePhoto;
     }
 }

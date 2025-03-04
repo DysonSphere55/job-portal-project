@@ -85,7 +85,7 @@
         <div class="resume" sec:authorize="hasAuthority('CANDIDATE')">
             <label for="resume-file">Upload your resume</label>
             <input type="file" id="resume-file" name="resume-file" accept="application/pdf" >
-            <input type="text" name="resumeFile" th:field="*{resume}" hidden>
+            <input type="text" name="resume" th:field="*{resume}" hidden>
         </div>
         <div class="profile-photo" sec:authorize="hasAuthority('CANDIDATE')">
             <label for="profile-photo">Choose a profile picture:</label>

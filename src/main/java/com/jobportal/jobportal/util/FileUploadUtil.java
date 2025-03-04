@@ -13,6 +13,8 @@ public class FileUploadUtil {
 
     public static void uploadFile(String fileName, String dirName, MultipartFile multipartFile) throws IOException {
 
+        if (multipartFile == null) return;
+
         Path path = Paths.get(dirName);
 
         if (!Files.exists(path)) {
