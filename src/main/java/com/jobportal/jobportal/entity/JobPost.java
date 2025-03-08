@@ -18,7 +18,6 @@ public class JobPost {
     private String description;
     private String salary;
     private LocalDateTime postedDate;
-
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "job_company_id", referencedColumnName = "id")
     private JobCompany jobCompany;
@@ -30,6 +29,12 @@ public class JobPost {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "recruiter_profile_id", referencedColumnName = "id")
     private RecruiterProfile recruiterProfile;
+
+    @Transient
+    private boolean isSaved;
+    @Transient
+    private boolean isApplied;
+
 
     public JobPost() {
     }
@@ -141,5 +146,21 @@ public class JobPost {
                 ", jobLocation=" + jobLocation +
                 ", recruiterProfile=" + recruiterProfile +
                 '}';
+    }
+
+    public boolean isSaved() {
+        return isSaved;
+    }
+
+    public void setSaved(boolean saved) {
+        isSaved = saved;
+    }
+
+    public boolean isApplied() {
+        return isApplied;
+    }
+
+    public void setApplied(boolean applied) {
+        isApplied = applied;
     }
 }

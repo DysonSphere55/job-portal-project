@@ -8,6 +8,7 @@ import com.jobportal.jobportal.entity.JobPost;
 import com.jobportal.jobportal.repository.JobPostRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,5 +52,19 @@ public class JobPostService {
         }
 
         return recruiterJobPostDTOList;
+    }
+
+    public List<JobPost> getAll() {
+        System.out.println("getAll()");
+        return jobPostRepository.findAll();
+    }
+
+    public List<JobPost> getWithFilters(
+            String job, String location, List<String> type, List<String> remote, LocalDateTime searchDate) {
+
+        System.out.println("getWithFilters() is running");
+        return searchDate == null ?
+                jobPostRepository.findWithFiltersWithoutDate(job, location, type, remote) :
+                jobPostRepository.findWithFilters(job, location, type, remote, searchDate);
     }
 }

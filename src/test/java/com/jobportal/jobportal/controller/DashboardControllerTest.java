@@ -66,7 +66,9 @@ public class DashboardControllerTest {
         testRecruiterProfile.setCompany("Tech Corp");
         when(recruiterProfileService.findById(testUser.getId())).thenReturn(Optional.of(testRecruiterProfile));
 
-        String viewName = dashboardController.dashBoardPage(model);
+        String viewName = dashboardController.dashBoardPage(model,
+                null, null, null, null, null,
+                null, null, null, false, false, false);
 
         verify(usersService, times(1)).findByEmail("recruiter@test.email");
         verify(recruiterProfileService, times(1)).findById(testUser.getId());
@@ -96,7 +98,9 @@ public class DashboardControllerTest {
         testCandidateProfile.setLastName("Doe");
         when(candidateProfileService.findById(testUser.getId())).thenReturn(Optional.of(testCandidateProfile));
 
-        String viewName = dashboardController.dashBoardPage(model);
+        String viewName = dashboardController.dashBoardPage(model,
+                null, null, null, null, null,
+                null, null, null, false, false, false);
 
         verify(usersService, times(1)).findByEmail("candidate@test.email");
         verify(candidateProfileService, times(1)).findById(testUser.getId());
@@ -113,7 +117,9 @@ public class DashboardControllerTest {
 
         when(securityContext.getAuthentication()).thenReturn(anonymousAuthentication);
 
-        String viewName = dashboardController.dashBoardPage(model);
+        String viewName = dashboardController.dashBoardPage(model,
+                null, null, null, null, null,
+                null, null, null, false, false, false);
 
         verifyNoInteractions(usersService);
         verifyNoInteractions(recruiterProfileService);

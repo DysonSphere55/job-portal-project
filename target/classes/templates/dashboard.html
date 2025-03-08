@@ -77,62 +77,62 @@
 
       <div class="job-container">
 
-<!--        <aside class="job-filters" sec:authorize="hasAuthority('CANDIDATE')">-->
+        <aside class="job-filters" sec:authorize="hasAuthority('CANDIDATE')">
 
-<!--          <form th:action="@{/dashboard/}" id="searchJobs">-->
-<!--            <div class="job-search-box" sec:authorize="hasAuthority('CANDIDATE')">-->
-<!--              <input type="text" id="job" placeholder="Search for Job" name="job" th:value="${job}"/>-->
-<!--              <input type="text" id="loc" placeholder="Search in Location" name="location" th:value="${location}"/>-->
-<!--              <button type="submit" form="searchJobs" value="Search">Search</button>-->
-<!--            </div>-->
-<!--            <h4>Filter Result</h4>-->
-<!--            <div class="job-filter-section">-->
-<!--              <label>Employment Type</label>-->
-<!--              <div>-->
-<!--                <input type="checkbox" id="partTime" name="partTime" th:checked="${partTime}" th:value="Part-Time">-->
-<!--                <label for="partTime">Part-Time</label>-->
-<!--              </div>-->
-<!--              <div>-->
-<!--                <input type="checkbox" id="fullTime" name="fullTime" th:checked="${fullTime}" th:value="Full-Time">-->
-<!--                <label for="fullTime">Full-Time</label>-->
-<!--              </div>-->
-<!--              <div>-->
-<!--                <input type="checkbox" id="freelance" name="freelance" th:checked="${freelance}" th:value="Freelance">-->
-<!--                <label for="freelance">Freelance</label>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="job-filter-section">-->
-<!--              <label>Remote Type</label>-->
-<!--              <div>-->
-<!--                <input type="checkbox" id="remoteOnly" name="remoteOnly" th:checked="${remoteOnly}" th:value="Remote-Only">-->
-<!--                <label for="remoteOnly">Remote-Only</label>-->
-<!--              </div>-->
-<!--              <div>-->
-<!--                <input type="checkbox" id="officeOnly" name="officeOnly" th:checked="${officeOnly}" th:value="Office-Only">-->
-<!--                <label for="officeOnly">Office-Only</label>-->
-<!--              </div>-->
-<!--              <div>-->
-<!--                <input type="checkbox" id="partialRemote" name="partialRemote" th:checked="${partialRemote}" th:value="Partial-Remote">-->
-<!--                <label for="partialRemote">Partial-Remote</label>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="job-filter-section">-->
-<!--              <label>Date Posted</label>-->
-<!--              <div>-->
-<!--                <input type="checkbox" id="today" name="today" th:checked="${today}">-->
-<!--                <label for="today">Today</label>-->
-<!--              </div>-->
-<!--              <div>-->
-<!--                <input type="checkbox" id="days7" name="days7" th:checked="${days7}">-->
-<!--                <label for="days7">Last 7 Days</label>-->
-<!--              </div>-->
-<!--              <div>-->
-<!--                <input type="checkbox" id="days30" name="days30" th:checked="${days30}">-->
-<!--                <label for="days30">Last 30 Days</label>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </form>-->
-<!--        </aside>-->
+          <form th:action="@{/dashboard/}" id="searchJobs">
+            <div class="job-search-box" sec:authorize="hasAuthority('CANDIDATE')">
+              <input type="text" id="job" placeholder="Search for Job" name="job" th:value="${job}"/>
+              <input type="text" id="loc" placeholder="Search in Location" name="location" th:value="${location}"/>
+              <button type="submit" form="searchJobs" value="Search">Search</button>
+            </div>
+            <h4>Filter Result</h4>
+            <div class="job-filter-section">
+              <label>Employment Type</label>
+              <div>
+                <input type="checkbox" id="partTime" name="partTime" th:checked="${partTime}" th:value="Part-Time">
+                <label for="partTime">Part-Time</label>
+              </div>
+              <div>
+                <input type="checkbox" id="fullTime" name="fullTime" th:checked="${fullTime}" th:value="Full-Time">
+                <label for="fullTime">Full-Time</label>
+              </div>
+              <div>
+                <input type="checkbox" id="freelance" name="freelance" th:checked="${freelance}" th:value="Freelance">
+                <label for="freelance">Freelance</label>
+              </div>
+            </div>
+            <div class="job-filter-section">
+              <label>Remote Type</label>
+              <div>
+                <input type="checkbox" id="remoteOnly" name="remoteOnly" th:checked="${remoteOnly}" th:value="Remote-Only">
+                <label for="remoteOnly">Remote-Only</label>
+              </div>
+              <div>
+                <input type="checkbox" id="officeOnly" name="officeOnly" th:checked="${officeOnly}" th:value="Office-Only">
+                <label for="officeOnly">Office-Only</label>
+              </div>
+              <div>
+                <input type="checkbox" id="partialRemote" name="partialRemote" th:checked="${partialRemote}" th:value="Partial-Remote">
+                <label for="partialRemote">Partial-Remote</label>
+              </div>
+            </div>
+            <div class="job-filter-section">
+              <label>Date Posted</label>
+              <div>
+                <input type="checkbox" id="today" name="today" th:checked="${today}">
+                <label for="today">Today</label>
+              </div>
+              <div>
+                <input type="checkbox" id="days7" name="days7" th:checked="${days7}">
+                <label for="days7">Last 7 Days</label>
+              </div>
+              <div>
+                <input type="checkbox" id="days30" name="days30" th:checked="${days30}">
+                <label for="days30">Last 30 Days</label>
+              </div>
+            </div>
+          </form>
+        </aside>
 
         <section class="job-posts">
 

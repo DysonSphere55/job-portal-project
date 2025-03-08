@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -32,4 +33,82 @@ public interface JobPostRepository extends JpaRepository<JobPost, Integer> {
             """, nativeQuery = true)
     List<IRecruiterJobPost> getRecruiterJobPosts(@Param("recruiterId") int recruiterId);
 
+
+    @Query(value = """
+            SELECT
+            	j.id,
+            	j.title,
+            	j.type,
+            	j.remote,
+            	j.description,
+            	j.salary,
+            	j.posted_date,
+            	j.job_company_id,
+            	j.job_location_id,
+            	j.recruiter_profile_id,
+            	c.id AS job_company_id,
+            	c.name,
+            	c.brand,
+            	l.id AS job_location_id,
+            	l.city,
+            	l.country
+            FROM job_post j
+            JOIN job_company c ON c.id = j.job_company_id
+            JOIN job_location l ON l.id = j.job_location_id
+            WHERE
+            	(j.title LIKE CONCAT('%', :job, '%'))
+                AND
+                (l.city LIKE CONCAT('%', :location, '%') OR l.country LIKE CONCAT('%', :location, '%') )
+            	AND
+            	(j.type IN (:type))
+            	AND
+            	(j.remote IN (:remote))
+            ;
+            """, nativeQuery = true)
+    List<JobPost> findWithFiltersWithoutDate(
+            @Param("job") String job,
+            @Param("location") String location,
+            @Param("type") List<String> type,
+            @Param("remote") List<String> remote);
+
+
+    @Query(value = """
+            SELECT
+            	j.id,
+            	j.title,
+            	j.type,
+            	j.remote,
+            	j.description,
+            	j.salary,
+            	j.posted_date,
+            	j.job_company_id,
+            	j.job_location_id,
+            	j.recruiter_profile_id,
+            	c.id,
+            	c.name,
+            	c.brand,
+            	l.id,
+            	l.city,
+            	l.country
+            FROM job_post j
+            JOIN job_company c ON c.id = j.job_company_id
+            JOIN job_location l ON l.id = j.job_location_id
+            WHERE
+            	(j.title LIKE CONCAT('%', :job, '%'))
+                AND
+                (l.city LIKE CONCAT('%', :location, '%') OR l.country LIKE CONCAT('%', :location, '%') )
+            	AND
+            	(j.type IN (:type))
+            	AND
+            	(j.remote IN (:remote))
+            	AND
+            	(j.posted_date > :searchDate)
+            ;
+            """, nativeQuery = true)
+    List<JobPost> findWithFilters(
+            @Param("job") String job,
+            @Param("location") String location,
+            @Param("type") List<String> type,
+            @Param("remote") List<String> remote,
+            @Param("searchDate") LocalDateTime searchDate);
 }
