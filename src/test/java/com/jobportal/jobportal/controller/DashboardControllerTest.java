@@ -1,10 +1,8 @@
 package com.jobportal.jobportal.controller;
 
-import com.jobportal.jobportal.entity.CandidateProfile;
-import com.jobportal.jobportal.entity.RecruiterProfile;
-import com.jobportal.jobportal.entity.Users;
-import com.jobportal.jobportal.entity.UsersType;
+import com.jobportal.jobportal.entity.*;
 import com.jobportal.jobportal.service.CandidateProfileService;
+import com.jobportal.jobportal.service.JobPostService;
 import com.jobportal.jobportal.service.RecruiterProfileService;
 import com.jobportal.jobportal.service.UsersService;
 import org.mockito.MockitoAnnotations;
@@ -31,6 +29,8 @@ public class DashboardControllerTest {
     private RecruiterProfileService recruiterProfileService;
     @Mock
     private CandidateProfileService candidateProfileService;
+    @Mock
+    private JobPostService jobPostService;
     @Mock
     private Model model;
     @Mock
@@ -98,12 +98,18 @@ public class DashboardControllerTest {
         testCandidateProfile.setLastName("Doe");
         when(candidateProfileService.findById(testUser.getId())).thenReturn(Optional.of(testCandidateProfile));
 
+        JobPost testJobPost = new JobPost();
+        testJobPost.setTitle("test job");
+        when(jobPostService.getAll()).thenReturn(List.of(testJobPost));
+
+
         String viewName = dashboardController.dashBoardPage(model,
                 null, null, null, null, null,
                 null, null, null, false, false, false);
 
         verify(usersService, times(1)).findByEmail("candidate@test.email");
         verify(candidateProfileService, times(1)).findById(testUser.getId());
+        verify(jobPostService, times(1)).getAll();
         verify(model).addAttribute("profile", testCandidateProfile);
 
         assertEquals("dashboard", viewName);

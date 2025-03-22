@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,29 +71,33 @@ public class DashboardController {
         model.addAttribute("days30", days30);
 
 
-        boolean isTypeFilter = false;
-        if (Objects.nonNull(partTime) && Objects.nonNull(fullTime) && Objects.nonNull(freelance)) {
+        boolean isTypeFilter = true;
+        if (partTime == null && fullTime == null && freelance == null) {
             partTime = "Part-Time";
             fullTime = "Full-Time";
             freelance = "Freelance";
-            isTypeFilter = true;
+            isTypeFilter = false;
         }
 
-        boolean isRemoteFilter = false;
-        if (Objects.nonNull(remoteOnly) && Objects.nonNull(officeOnly) && Objects.nonNull(partialRemote)) {
+        boolean isRemoteFilter = true;
+        if (remoteOnly == null && officeOnly == null && partialRemote == null   ) {
             remoteOnly = "Remote-Only";
             officeOnly = "Office-Only";
             partialRemote = "Partial-Remote";
-            isRemoteFilter = true;
+            isRemoteFilter = false;
         }
 
         boolean isDateFilter = false;
-        LocalDateTime searchDate = null;
-        if (today || days7 || days30) {
-            isRemoteFilter = true;
-            if (today) searchDate = LocalDateTime.now();
-            if (days7) searchDate = LocalDateTime.now().minusDays(7);
-            if (days30) searchDate = LocalDateTime.now().minusDays(30);
+        LocalDate searchDate = null;
+        if (today) {
+            isDateFilter = true;
+            searchDate = LocalDate.now();
+        } else if (days7) {
+            isDateFilter = true;
+            searchDate = LocalDate.now().minusDays(7);
+        } else if (days30) {
+            isDateFilter = true;
+            searchDate = LocalDate.now().minusDays(30);
         }
 
 
@@ -121,9 +126,6 @@ public class DashboardController {
                         .orElseThrow(() -> new UsernameNotFoundException("Profile not found with id: " + user.getId()));
 
                 List<JobPost> candidateJobPosts = new ArrayList<>();
-
-                System.out.println("--------------------job = " + job);
-                System.out.println("--------------------location = " + location);
 
                 if (!StringUtils.hasText(job) && !StringUtils.hasText(location) &&
                         !isTypeFilter && !isRemoteFilter && !isDateFilter) {

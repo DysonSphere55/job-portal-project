@@ -1,5 +1,6 @@
 package com.jobportal.jobportal.service;
 
+import com.jobportal.jobportal.dto.CandidateJobPostDTO;
 import com.jobportal.jobportal.dto.IRecruiterJobPost;
 import com.jobportal.jobportal.dto.RecruiterJobPostDTO;
 import com.jobportal.jobportal.entity.JobCompany;
@@ -8,6 +9,7 @@ import com.jobportal.jobportal.entity.JobPost;
 import com.jobportal.jobportal.repository.JobPostRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +62,49 @@ public class JobPostService {
     }
 
     public List<JobPost> getWithFilters(
-            String job, String location, List<String> type, List<String> remote, LocalDateTime searchDate) {
+            String job, String location, List<String> type, List<String> remote, LocalDate searchDate) {
 
-        System.out.println("getWithFilters() is running");
-        return searchDate == null ?
-                jobPostRepository.findWithFiltersWithoutDate(job, location, type, remote) :
-                jobPostRepository.findWithFilters(job, location, type, remote, searchDate);
+        List<CandidateJobPostDTO> candidateJobPostDTOList = null;
+
+        if (searchDate == null) {
+            candidateJobPostDTOList = jobPostRepository.findWithFiltersWithoutDate(job, location, type, remote);
+        } else {
+            candidateJobPostDTOList = jobPostRepository.findWithFilters(job, location, type, remote, searchDate);
+        }
+
+        List<JobPost> result = new ArrayList<>();
+
+        for (CandidateJobPostDTO jobPostDTO : candidateJobPostDTOList) {
+
+            JobPost jobPost = new JobPost();
+
+            jobPost.setId(jobPostDTO.getJobId());
+            jobPost.setTitle(jobPostDTO.getTitle());
+            jobPost.setType(jobPostDTO.getType());
+            jobPost.setRemote(jobPostDTO.getRemote());
+            jobPost.setDescription(jobPostDTO.getDescription());
+            jobPost.setSalary(jobPostDTO.getSalary());
+            jobPost.setPostedDate(jobPostDTO.getPostedDate());
+            jobPost.setJobCompany(
+                    new JobCompany(
+                            jobPostDTO.getCompanyId(),
+                            jobPostDTO.getName(),
+                            jobPostDTO.getBrand()
+                    )
+            );
+            jobPost.setJobLocation(
+                    new JobLocation(
+                            jobPostDTO.getLocationId(),
+                            jobPostDTO.getCity(),
+                            jobPostDTO.getCountry()
+                    )
+            );
+
+            result.add(jobPost);
+        }
+
+        result.forEach(System.out::println);
+
+        return result;
     }
 }

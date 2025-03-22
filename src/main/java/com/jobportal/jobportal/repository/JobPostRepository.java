@@ -1,5 +1,6 @@
 package com.jobportal.jobportal.repository;
 
+import com.jobportal.jobportal.dto.CandidateJobPostDTO;
 import com.jobportal.jobportal.dto.IRecruiterJobPost;
 import com.jobportal.jobportal.entity.JobPost;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,20 +38,17 @@ public interface JobPostRepository extends JpaRepository<JobPost, Integer> {
 
     @Query(value = """
             SELECT
-            	j.id,
+            	j.id AS jobId,
             	j.title,
             	j.type,
             	j.remote,
             	j.description,
             	j.salary,
             	j.posted_date,
-            	j.job_company_id,
-            	j.job_location_id,
-            	j.recruiter_profile_id,
-            	c.id AS job_company_id,
+            	c.id AS companyId,
             	c.name,
             	c.brand,
-            	l.id AS job_location_id,
+            	l.id AS locationId,
             	l.city,
             	l.country
             FROM job_post j
@@ -65,7 +64,7 @@ public interface JobPostRepository extends JpaRepository<JobPost, Integer> {
             	(j.remote IN (:remote))
             ;
             """, nativeQuery = true)
-    List<JobPost> findWithFiltersWithoutDate(
+    List<CandidateJobPostDTO> findWithFiltersWithoutDate(
             @Param("job") String job,
             @Param("location") String location,
             @Param("type") List<String> type,
@@ -74,20 +73,17 @@ public interface JobPostRepository extends JpaRepository<JobPost, Integer> {
 
     @Query(value = """
             SELECT
-            	j.id,
+            	j.id AS jobId,
             	j.title,
             	j.type,
             	j.remote,
             	j.description,
             	j.salary,
             	j.posted_date,
-            	j.job_company_id,
-            	j.job_location_id,
-            	j.recruiter_profile_id,
-            	c.id,
+            	c.id AS companyId,
             	c.name,
             	c.brand,
-            	l.id,
+            	l.id AS locationId,
             	l.city,
             	l.country
             FROM job_post j
@@ -102,13 +98,13 @@ public interface JobPostRepository extends JpaRepository<JobPost, Integer> {
             	AND
             	(j.remote IN (:remote))
             	AND
-            	(j.posted_date > :searchDate)
+            	(j.posted_date >= :searchDate)
             ;
             """, nativeQuery = true)
-    List<JobPost> findWithFilters(
+    List<CandidateJobPostDTO> findWithFilters(
             @Param("job") String job,
             @Param("location") String location,
             @Param("type") List<String> type,
             @Param("remote") List<String> remote,
-            @Param("searchDate") LocalDateTime searchDate);
+            @Param("searchDate") LocalDate searchDate);
 }

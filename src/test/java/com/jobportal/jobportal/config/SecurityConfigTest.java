@@ -50,7 +50,7 @@ public class SecurityConfigTest {
     }
 
     @Test
-    @WithUserDetails(value = "recruiter@test.email")
+    @WithUserDetails(value = "recruiter@email.test")
     void shouldAllowAuthenticatedUserAccess() throws Exception {
 
         mockMvc.perform(get("/dashboard"))
