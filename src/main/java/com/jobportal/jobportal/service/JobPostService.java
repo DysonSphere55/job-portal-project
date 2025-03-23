@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JobPostService {
@@ -25,6 +26,10 @@ public class JobPostService {
 
     public JobPost save(JobPost jobPost) {
         return jobPostRepository.save(jobPost);
+    }
+
+    public Optional<JobPost> findById(int id) {
+        return jobPostRepository.findById(id);
     }
 
     public List<RecruiterJobPostDTO> getRecruiterJobPosts(int recruiterId) {

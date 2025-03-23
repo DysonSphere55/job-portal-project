@@ -1,30 +1,28 @@
 package com.jobportal.jobportal.controller;
 
 import com.jobportal.jobportal.dto.RecruiterJobPostDTO;
-import com.jobportal.jobportal.entity.CandidateProfile;
-import com.jobportal.jobportal.entity.JobPost;
-import com.jobportal.jobportal.entity.RecruiterProfile;
-import com.jobportal.jobportal.entity.Users;
+import com.jobportal.jobportal.entity.*;
 import com.jobportal.jobportal.service.CandidateProfileService;
 import com.jobportal.jobportal.service.JobPostService;
 import com.jobportal.jobportal.service.RecruiterProfileService;
 import com.jobportal.jobportal.service.UsersService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 public class DashboardController {
@@ -145,4 +143,76 @@ public class DashboardController {
 
         return "dashboard";
     }
+
+//    @GetMapping("/job/detail/{id}")
+//    public String jobDetails(@PathVariable("id") int jobPostId, Model model) {
+//
+//        JobPost jobPost = jobPostService.findById(jobPostId)
+//                .orElseThrow(() -> new EntityNotFoundException("Job not found with id -" + jobPostId));
+//        LocalDateTime postedDate = jobPost.getPostedDate();
+//        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+//
+//            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("RECRUITER"))) {
+//                List<CandidateJobApply> appliedJobs = candidateJob.findByJobPostActivity(jobPostActivity);
+//                List<JobSeekerProfile> appliedCandidates = new ArrayList<>();
+//                for (JobSeekerApply appliedJob : appliedJobs) {
+//                    appliedCandidates.add(appliedJob.getJobSeekerProfile());
+//                }
+//                System.out.println("appliedCandidates = " + appliedCandidates);
+//                model.addAttribute("appliedCandidates", appliedCandidates);
+//            }
+//
+//            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("Job Seeker"))) {
+//                Users user = usersService.findByEmail(authentication.getName());
+//                JobSeekerProfile profile = jobSeekerProfileService.getById(user.getUserId());
+//                List<JobSeekerApply> appliedJobs = jobSeekerApplyService.findByJobSeekerProfile(profile);
+//                List<JobSeekerSave> savedJobs = jobSeekerSaveService.findByJobSeekerProfile(profile);
+//                for (JobSeekerApply appliedJob : appliedJobs) {
+//                    if (Objects.equals(
+//                            appliedJob.getJobPostActivity().getJobPostId(),
+//                            jobPostActivity.getJobPostId()
+//                    )) {
+//                        jobPostActivity.setApplied(true);
+//                        break;
+//                    }
+//                }
+//                for (JobSeekerSave savedJob : savedJobs) {
+//                    if (Objects.equals(
+//                            savedJob.getJobPostActivity().getJobPostId(),
+//                            jobPostActivity.getJobPostId()
+//                    )) {
+//                        jobPostActivity.setSaved(true);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//
+//        model.addAttribute("job", jobPostActivity);
+//        model.addAttribute("jobPostId", jobPostId);
+//        model.addAttribute("postedDate", formatter.format(postedDate));
+//
+//        return "job-detail";
+//    }
+//
+//    @GetMapping("/job-detail/delete/{id}")
+//    public String deleteJob(@PathVariable("id") int jobPostId, Model model) {
+//
+//        jobPostActivityService.deleteById(jobPostId);
+//
+//        return "redirect:/dashboard/**";
+//    }
+//
+//    @GetMapping("/job-detail/edit/{id}")
+//    public String editJob(@PathVariable("id") int jobPostId, Model model) {
+//
+//        JobPostActivity jobPostActivity = jobPostActivityService.getByJobId(jobPostId);
+//
+//        model.addAttribute("job", jobPostActivity);
+//
+//        return "add-job";
+//    }
 }

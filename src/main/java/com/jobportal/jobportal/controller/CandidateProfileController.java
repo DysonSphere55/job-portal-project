@@ -13,14 +13,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -119,4 +117,50 @@ public class CandidateProfileController {
 
         return "redirect:/dashboard";
     }
+
+//    @GetMapping("/job/apply/{id}")
+//    public String applyJob(@PathVariable("id") int jobPostId) {
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (!(authentication instanceof SecurityContextHolder)) {
+//            Users user = usersService.findByEmail(authentication.getName());
+//
+//            JobSeekerProfile profile = jobSeekerProfileService.getById(user.getUserId());
+//            JobPostActivity job = jobPostActivityService.getByJobId(jobPostId);
+//
+//            JobSeekerApply applyJob = new JobSeekerApply();
+//            applyJob.setJobSeekerProfile(profile);
+//            applyJob.setJobPostActivity(job);
+//            applyJob.setApplyDate(new Date());
+//            applyJob.setCoverLetter("");
+//
+//            jobSeekerApplyService.save(applyJob);
+//
+//        }
+//
+//        return "redirect:/dashboard";
+//    }
+//
+//    @GetMapping("/job-detail/save/{id}")
+//    public String saveJob(@PathVariable("id") int jobPostId) {
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (!(authentication instanceof SecurityContextHolder)) {
+//            Users user = usersService.findByEmail(authentication.getName());
+//
+//            JobSeekerProfile profile = jobSeekerProfileService.getById(user.getUserId());
+//            JobPostActivity job = jobPostActivityService.getByJobId(jobPostId);
+//
+//            JobSeekerSave saveJob = new JobSeekerSave();
+//            saveJob.setJobSeekerProfile(profile);
+//            saveJob.setJobPostActivity(job);
+//
+//            jobSeekerSaveService.save(saveJob);
+//
+//        }
+//
+//        return "redirect:/dashboard";
+//    }
 }
