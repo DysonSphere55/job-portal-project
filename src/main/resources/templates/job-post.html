@@ -36,27 +36,7 @@
         <input type="text" placeholder="Company" th:field="*{jobCompany.name}">
         <input type="submit" value="Submit">
     </form>
-      <div>
-          <div class="buttons" sec:authorize="hasAuthority('RECRUITER')">
-              <form th:action="@{/job/edit/{id}(id=${job.id})}" method="GET">
-                  <button type="submit">Edit Job</button>
-              </form>
-              <form th:action="@{/job/delete/{id}(id=${job.id})}" method="GET">
-                  <button type="submit">Delete Job</button>
-              </form>
-          </div>
-          <div class="buttons" sec:authorize="hasAuthority('CANDIDATE')">
-              <form th:action="@{/job/apply/{id}(id=${job.id})}" method="GET">
-                  <button type="submit" th:if="${job.applied == false}">Apply</button>
-                  <button type="submit" th:if="${job.applied == true}" disabled>Already Applied</button>
-              </form>
-              <form th:action="@{/job/save/{id}(id=${job.id})}" method="GET">
-                  <button type="submit" th:if="${job.saved == false}">Save</button>
-                  <button type="submit" th:if="${job.saved == true}" disabled>Already Saved</button>
-              </form>
 
-          </div>
-      </div>
   </div>
 </body>
 </html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Job</title>
+    <style>
+        .job-container {
+            flex-basis: 500px;
+        }
+
+        .job-specs {
+            display: flex;
+            gap: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 40px;
+        }
+        .container {
+            width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 100px
+        }
+        .applied-candidates-list {
+            flex-basis: 600px;
+            border: #000 solid 2px;
+            border-radius: 8px;
+            background-color: #e7f5ff;
+        }
+        .applied-candidate-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .applied-candidate {
+            border: #000 solid 2px;
+            border-radius: 8px;
+            margin: 7px 14px;
+            background-color: #a5d8ff;
+            color: #444;
+            text-decoration: none;
+        }
+
+        .applied-candidate a:link,
+        .applied-candidate a:visited {
+            color: #444;
+            text-decoration: none;
+        }
+
+        .applied-candidate a:hover,
+        .applied-candidate a:active,
+        .applied-candidate:hover {
+            font-weight: bold;
+            background-color: #ffd8a8;
+            color: orangered;
+        }
+
+        .applied-candidates-list h3 {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+  <div class="container">
+      <div class="job-container">
+          <div class="job-upper-container">
+              <div class="job-details">
+                  <h3>Job Details</h3>
+                  <h4 class="job-title" th:text="${job.title}">Job Title</h4>
+                  <div class="job-location">
+                      <span th:text="${job.jobLocation.city}">City</span>
+                      <span th:text="${job.jobLocation.country}">Country</span>
+                  </div>
+                  <span class="job-company" th:text="${job.jobCompany.name}">Company Name</span>
+              </div>
+          </div>
+
+          <div class="job-lower-container">
+              <h3>Job Specs</h3>
+              <div class="job-specs">
+                  <span th:text="'Date Posted: '+${postedDate}">Date Posted: 03.02.2025</span>
+                  <span th:text="'Salary: '+${job.salary}">Salary: 57000</span>
+                  <span th:text="'Type: '+${job.type}">Type: Full-Time</span>
+                  <span th:text="'Remote: '+${job.remote}">Remote: Office-Only</span>
+              </div>
+
+              <div class="job-description">
+                  <h3>Job Description</h3>
+                  <p th:text="${job.description}">Lorem Ipsum</p>
+              </div>
+            <div>
+                <div class="buttons" sec:authorize="hasAuthority('RECRUITER')">
+                    <form th:action="@{/job/edit/{id}(id=${job.id})}" method="GET">
+                        <button type="submit">Edit Job</button>
+                    </form>
+                    <form th:action="@{/job/delete/{id}(id=${job.id})}" method="GET">
+                        <button type="submit">Delete Job</button>
+                    </form>
+                </div>
+                <div class="buttons" sec:authorize="hasAuthority('CANDIDATE')">
+                    <form th:action="@{/job/apply/{id}(id=${job.id})}" method="GET">
+                        <button type="submit" th:if="${job.applied == false}">Apply</button>
+                        <button type="submit" th:if="${job.applied == true}" disabled>Already Applied</button>
+                    </form>
+                    <form th:action="@{/job/save/{id}(id=${job.id})}" method="GET">
+                        <button type="submit" th:if="${job.saved == false}">Save</button>
+                        <button type="submit" th:if="${job.saved == true}" disabled>Already Saved</button>
+                    </form>
+
+                </div>
+            </div>
+
+          </div>
+      </div>
+      <div class="applied-candidates-list" sec:authorize="hasAuthority('RECRUITER')">
+          <h3>Applied Candidates</h3>
+          <th:block th:each="candidate : ${appliedCandidates}">
+              <div class="applied-candidate">
+                  <a th:href="@{/candidate/{id}(id=${candidate.id})}">
+                      <div class="applied-candidate-details">
+                          <div>
+                              <span th:text="${candidate.firstName}">First Name</span>
+                              <span th:text="${candidate.lastName}">First Name</span>
+                          </div>
+                      </div>
+                  </a>
+              </div>
+          </th:block>
+      </div>
+  </div>
+
+</body>
+</html>

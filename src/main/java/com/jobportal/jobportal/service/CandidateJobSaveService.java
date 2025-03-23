@@ -19,11 +19,11 @@ public class CandidateJobSaveService {
         this.candidateJobSaveRepository = candidateJobSaveRepository;
     }
 
-    List<CandidateJobSave> findByJobPost(JobPost jobPost) {
+    public List<CandidateJobSave> findByJobPost(JobPost jobPost) {
         return candidateJobSaveRepository.findByJobPost(jobPost);
     }
 
-    List<CandidateJobSave> findByCandidateProfile(CandidateProfile candidateProfile) {
+    public List<CandidateJobSave> findByCandidateProfile(CandidateProfile candidateProfile) {
         return candidateJobSaveRepository.findByCandidateProfile(candidateProfile);
     }
 }

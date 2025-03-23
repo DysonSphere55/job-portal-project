@@ -112,4 +112,9 @@ public class JobPostService {
 
         return result;
     }
+
+    public void deleteById(int jobPostId) {
+        jobPostRepository.deleteById(jobPostId);
+    }
+
 }

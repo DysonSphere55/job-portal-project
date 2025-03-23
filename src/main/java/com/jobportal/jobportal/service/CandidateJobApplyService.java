@@ -17,11 +17,11 @@ public class CandidateJobApplyService {
         this.candidateJobApplyRepository = candidateJobApplyRepository;
     }
 
-    List<CandidateJobApply> findByJobPost(JobPost jobPost) {
+    public List<CandidateJobApply> findByJobPost(JobPost jobPost) {
         return candidateJobApplyRepository.findByJobPost(jobPost);
     }
 
-    List<CandidateJobApply> findByCandidateProfile(CandidateProfile candidateProfile) {
+    public List<CandidateJobApply> findByCandidateProfile(CandidateProfile candidateProfile) {
         return candidateJobApplyRepository.findByCandidateProfile(candidateProfile);
     }
 }
