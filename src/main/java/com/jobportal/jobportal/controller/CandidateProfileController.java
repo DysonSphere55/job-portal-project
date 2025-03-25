@@ -1,11 +1,9 @@
 package com.jobportal.jobportal.controller;
 
-import com.jobportal.jobportal.entity.CandidateProfile;
-import com.jobportal.jobportal.entity.CandidateSkills;
-import com.jobportal.jobportal.entity.Users;
-import com.jobportal.jobportal.service.CandidateProfileService;
-import com.jobportal.jobportal.service.UsersService;
+import com.jobportal.jobportal.entity.*;
+import com.jobportal.jobportal.service.*;
 import com.jobportal.jobportal.util.FileUploadUtil;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,10 +27,18 @@ public class CandidateProfileController {
 
     private final UsersService usersService;
     private final CandidateProfileService candidateProfileService;
+    private final JobPostService jobPostService;
+    private final CandidateJobSaveService candidateJobSaveService;
+    private final CandidateJobApplyService candidateJobApplyService;
 
-    public CandidateProfileController(UsersService usersService, CandidateProfileService candidateProfileService) {
+    public CandidateProfileController(UsersService usersService, CandidateProfileService candidateProfileService,
+                                      JobPostService jobPostService, CandidateJobSaveService candidateJobSaveService,
+                                      CandidateJobApplyService candidateJobApplyService) {
         this.usersService = usersService;
         this.candidateProfileService = candidateProfileService;
+        this.jobPostService = jobPostService;
+        this.candidateJobSaveService = candidateJobSaveService;
+        this.candidateJobApplyService = candidateJobApplyService;
     }
 
     @GetMapping("/candidate/profile")
@@ -118,49 +125,56 @@ public class CandidateProfileController {
         return "redirect:/dashboard";
     }
 
-//    @GetMapping("/job/apply/{id}")
-//    public String applyJob(@PathVariable("id") int jobPostId) {
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (!(authentication instanceof SecurityContextHolder)) {
-//            Users user = usersService.findByEmail(authentication.getName());
-//
-//            JobSeekerProfile profile = jobSeekerProfileService.getById(user.getUserId());
-//            JobPostActivity job = jobPostActivityService.getByJobId(jobPostId);
-//
-//            JobSeekerApply applyJob = new JobSeekerApply();
-//            applyJob.setJobSeekerProfile(profile);
-//            applyJob.setJobPostActivity(job);
-//            applyJob.setApplyDate(new Date());
-//            applyJob.setCoverLetter("");
-//
-//            jobSeekerApplyService.save(applyJob);
-//
-//        }
-//
-//        return "redirect:/dashboard";
-//    }
-//
-//    @GetMapping("/job-detail/save/{id}")
-//    public String saveJob(@PathVariable("id") int jobPostId) {
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (!(authentication instanceof SecurityContextHolder)) {
-//            Users user = usersService.findByEmail(authentication.getName());
-//
-//            JobSeekerProfile profile = jobSeekerProfileService.getById(user.getUserId());
-//            JobPostActivity job = jobPostActivityService.getByJobId(jobPostId);
-//
-//            JobSeekerSave saveJob = new JobSeekerSave();
-//            saveJob.setJobSeekerProfile(profile);
-//            saveJob.setJobPostActivity(job);
-//
-//            jobSeekerSaveService.save(saveJob);
-//
-//        }
-//
-//        return "redirect:/dashboard";
-//    }
+    @GetMapping("/job/apply/{id}")
+    public String applyJob(@PathVariable("id") int jobPostId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof SecurityContextHolder)) {
+            Users user = usersService.findByEmail(authentication.getName()).orElseThrow(
+                    () -> new UsernameNotFoundException("User not found -"+authentication.getName()));
+
+            CandidateProfile profile = candidateProfileService.findById(user.getId()).orElseThrow(
+                    () -> new UsernameNotFoundException("Profile not found -"+user.getId()));
+
+            JobPost job = jobPostService.findById(jobPostId).orElseThrow(
+                    () -> new EntityNotFoundException("Job not found -"+jobPostId));
+
+            CandidateJobApply applyJob = new CandidateJobApply();
+            applyJob.setCandidateProfile(profile);
+            applyJob.setJobPost(job);
+            applyJob.setApplyDate(LocalDateTime.now());
+
+            candidateJobApplyService.save(applyJob);
+
+        }
+
+        return "redirect:/dashboard";
+    }
+
+    @GetMapping("/job/save/{id}")
+    public String saveJob(@PathVariable("id") int jobPostId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof SecurityContextHolder)) {
+            Users user = usersService.findByEmail(authentication.getName()).orElseThrow(
+                    () -> new UsernameNotFoundException("User not found -"+authentication.getName()));
+
+            CandidateProfile profile = candidateProfileService.findById(user.getId()).orElseThrow(
+                    () -> new UsernameNotFoundException("Profile not found -"+user.getId()));
+
+            JobPost job = jobPostService.findById(jobPostId).orElseThrow(
+                    () -> new EntityNotFoundException("Job not found -"+jobPostId));
+
+            CandidateJobSave saveJob = new CandidateJobSave();
+            saveJob.setCandidateProfile(profile);
+            saveJob.setJobPost(job);
+
+            candidateJobSaveService.save(saveJob);
+
+        }
+
+        return "redirect:/dashboard";
+    }
 }

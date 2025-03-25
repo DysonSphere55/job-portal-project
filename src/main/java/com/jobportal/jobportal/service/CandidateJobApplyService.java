@@ -24,4 +24,8 @@ public class CandidateJobApplyService {
     public List<CandidateJobApply> findByCandidateProfile(CandidateProfile candidateProfile) {
         return candidateJobApplyRepository.findByCandidateProfile(candidateProfile);
     }
+
+    public CandidateJobApply save(CandidateJobApply candidateJobApply) {
+        return candidateJobApplyRepository.save(candidateJobApply);
+    }
 }
