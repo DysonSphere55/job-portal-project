@@ -6,6 +6,7 @@ import com.jobportal.jobportal.util.FileUploadUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -125,56 +126,6 @@ public class CandidateProfileController {
         return "redirect:/dashboard";
     }
 
-    @GetMapping("/job/apply/{id}")
-    public String applyJob(@PathVariable("id") int jobPostId) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (!(authentication instanceof SecurityContextHolder)) {
-            Users user = usersService.findByEmail(authentication.getName()).orElseThrow(
-                    () -> new UsernameNotFoundException("User not found -"+authentication.getName()));
-
-            CandidateProfile profile = candidateProfileService.findById(user.getId()).orElseThrow(
-                    () -> new UsernameNotFoundException("Profile not found -"+user.getId()));
-
-            JobPost job = jobPostService.findById(jobPostId).orElseThrow(
-                    () -> new EntityNotFoundException("Job not found -"+jobPostId));
-
-            CandidateJobApply applyJob = new CandidateJobApply();
-            applyJob.setCandidateProfile(profile);
-            applyJob.setJobPost(job);
-            applyJob.setApplyDate(LocalDateTime.now());
-
-            candidateJobApplyService.save(applyJob);
-
-        }
-
-        return "redirect:/dashboard";
-    }
-
-    @GetMapping("/job/save/{id}")
-    public String saveJob(@PathVariable("id") int jobPostId) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (!(authentication instanceof SecurityContextHolder)) {
-            Users user = usersService.findByEmail(authentication.getName()).orElseThrow(
-                    () -> new UsernameNotFoundException("User not found -"+authentication.getName()));
-
-            CandidateProfile profile = candidateProfileService.findById(user.getId()).orElseThrow(
-                    () -> new UsernameNotFoundException("Profile not found -"+user.getId()));
-
-            JobPost job = jobPostService.findById(jobPostId).orElseThrow(
-                    () -> new EntityNotFoundException("Job not found -"+jobPostId));
-
-            CandidateJobSave saveJob = new CandidateJobSave();
-            saveJob.setCandidateProfile(profile);
-            saveJob.setJobPost(job);
-
-            candidateJobSaveService.save(saveJob);
-
-        }
-
-        return "redirect:/dashboard";
-    }
 }

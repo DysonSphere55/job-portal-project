@@ -3,22 +3,17 @@ package com.jobportal.jobportal.controller;
 import com.jobportal.jobportal.dto.RecruiterJobPostDTO;
 import com.jobportal.jobportal.entity.*;
 import com.jobportal.jobportal.service.*;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -45,7 +40,7 @@ public class DashboardController {
     }
 
     @GetMapping("/dashboard/**")
-    public String dashBoardPage(Model model,
+    public String dashboardPage(Model model,
                                 @RequestParam(name = "job", required = false) String job,
                                 @RequestParam(name = "location", required = false) String location,
                                 @RequestParam(name = "partTime", required = false) String partTime,
@@ -138,6 +133,40 @@ public class DashboardController {
                             searchDate);
                 }
 
+                List<CandidateJobApply> candidateAppliedJobs = candidateJobApplyService
+                        .findByCandidateProfile(candidateProfile);
+                List<CandidateJobSave> candidateSavedJobs = candidateJobSaveService
+                        .findByCandidateProfile(candidateProfile);
+
+                boolean applied;
+                boolean saved;
+                for (JobPost jobPost : candidateJobPosts) {
+                    applied = false;
+                    saved = false;
+                    for (CandidateJobApply appliedJob : candidateAppliedJobs) {
+                        if (Objects.equals(
+                                jobPost.getId(),
+                                appliedJob.getJobPost().getId()
+                        )) {
+                            jobPost.setApplied(true);
+                            applied = true;
+                            break;
+                        }
+                    }
+                    for (CandidateJobSave savedJob : candidateSavedJobs) {
+                        if (Objects.equals(
+                                jobPost.getId(),
+                                savedJob.getJobPost().getId()
+                        )) {
+                            jobPost.setSaved(true);
+                            saved = true;
+                            break;
+                        }
+                    }
+                    if (!applied) jobPost.setApplied(false);
+                    if (!saved) jobPost.setSaved(false);
+                }
+
                 model.addAttribute("profile", candidateProfile);
                 model.addAttribute("jobPosts", candidateJobPosts);
             }
@@ -146,80 +175,39 @@ public class DashboardController {
         return "dashboard";
     }
 
-    @GetMapping("/job/detail/{id}")
-    public String jobDetails(@PathVariable("id") int jobPostId, Model model) {
 
-        JobPost jobPost = jobPostService.findById(jobPostId)
-                .orElseThrow(() -> new EntityNotFoundException("Job not found with id -" + jobPostId));
-        LocalDateTime postedDate = jobPost.getPostedDate();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+    @GetMapping("/candidate/jobs/saved")
+    public String dashboardSavedJobsPage(Model model) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            Users user = usersService.findByEmail(authentication.getName())
+                    .orElseThrow(() ->
+                            new UsernameNotFoundException("User not found with email: " + authentication.getName()));
 
-            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("RECRUITER"))) {
-                List<CandidateJobApply> appliedJobs = candidateJobApplyService.findByJobPost(jobPost);
-                List<CandidateProfile> appliedCandidates = new ArrayList<>();
-                for (CandidateJobApply appliedJob : appliedJobs) {
-                    appliedCandidates.add(appliedJob.getCandidateProfile());
-                }
-                model.addAttribute("appliedCandidates", appliedCandidates);
-            }
+            model.addAttribute("username", user.getEmail());
 
-            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("CANDIDATE"))) {
-                Users user = usersService.findByEmail(authentication.getName()).orElseThrow(
-                        () -> new UsernameNotFoundException("User not found with email: "+ authentication.getName())
-                );
-                CandidateProfile profile = candidateProfileService.findById(user.getId()).orElseThrow(
-                        () -> new UsernameNotFoundException("Profile not found with id: "+user.getId())
-                );
-                List<CandidateJobApply> appliedJobs = candidateJobApplyService.findByCandidateProfile(profile);
-                List<CandidateJobSave> savedJobs = candidateJobSaveService.findByCandidateProfile(profile);
-                for (CandidateJobApply appliedJob : appliedJobs) {
-                    if (Objects.equals(
-                            appliedJob.getJobPost().getId(),
-                            jobPost.getId()
-                    )) {
-                        jobPost.setApplied(true);
-                        break;
-                    }
+
+            if ("CANDIDATE".equals(user.getUsersType().getType())) {
+
+                CandidateProfile candidateProfile = candidateProfileService.findById(user.getId())
+                        .orElseThrow(() -> new UsernameNotFoundException("Profile not found with id: " + user.getId()));
+
+                List<JobPost> candidateJobPosts = new ArrayList<>();
+
+                List<CandidateJobSave> candidateSavedJobs = candidateJobSaveService
+                        .findByCandidateProfile(candidateProfile);
+
+                for (CandidateJobSave savedJob : candidateSavedJobs) {
+                    candidateJobPosts.add(savedJob.getJobPost());
                 }
-                for (CandidateJobSave savedJob : savedJobs) {
-                    if (Objects.equals(
-                            savedJob.getJobPost().getId(),
-                            jobPost.getId()
-                    )) {
-                        jobPost.setSaved(true);
-                        break;
-                    }
-                }
+
+                model.addAttribute("profile", candidateProfile);
+                model.addAttribute("jobPosts", candidateJobPosts);
             }
         }
-
-        model.addAttribute("job", jobPost);
-        model.addAttribute("jobPostId", jobPostId);
-        model.addAttribute("postedDate", postedDate);
-
-        return "job-detail";
+        return "saved-jobs";
     }
 
-    @GetMapping("/job/detail/delete/{id}")
-    public String deleteJob(@PathVariable("id") int jobPostId, Model model) {
-
-        jobPostService.deleteById(jobPostId);
-
-        return "redirect:/dashboard/**";
-    }
-
-    @GetMapping("/job/detail/edit/{id}")
-    public String editJob(@PathVariable("id") int jobPostId, Model model) {
-
-        JobPost jobPost = jobPostService.findById(jobPostId).orElseThrow(
-                () -> new EntityNotFoundException("Job not found with id: "+ jobPostId)
-        );
-
-        model.addAttribute("job", jobPost);
-
-        return "add-job";
-    }
 }

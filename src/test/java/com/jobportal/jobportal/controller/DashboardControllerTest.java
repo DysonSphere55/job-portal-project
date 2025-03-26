@@ -66,7 +66,7 @@ public class DashboardControllerTest {
         testRecruiterProfile.setCompany("Tech Corp");
         when(recruiterProfileService.findById(testUser.getId())).thenReturn(Optional.of(testRecruiterProfile));
 
-        String viewName = dashboardController.dashBoardPage(model,
+        String viewName = dashboardController.dashboardPage(model,
                 null, null, null, null, null,
                 null, null, null, false, false, false);
 
@@ -103,7 +103,7 @@ public class DashboardControllerTest {
         when(jobPostService.getAll()).thenReturn(List.of(testJobPost));
 
 
-        String viewName = dashboardController.dashBoardPage(model,
+        String viewName = dashboardController.dashboardPage(model,
                 null, null, null, null, null,
                 null, null, null, false, false, false);
 
@@ -123,7 +123,7 @@ public class DashboardControllerTest {
 
         when(securityContext.getAuthentication()).thenReturn(anonymousAuthentication);
 
-        String viewName = dashboardController.dashBoardPage(model,
+        String viewName = dashboardController.dashboardPage(model,
                 null, null, null, null, null,
                 null, null, null, false, false, false);
 
